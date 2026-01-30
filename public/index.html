@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact - Watuluvx</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="header">
+    <h1 class="logo">Watuluvx</h1>
+<nav>
+  <a href="/" class="nav-btn">Home</a>
+  <a href="/about" class="nav-btn">About</a>
+  <a href="/contact" class="nav-btn">Contact</a>
+</nav>
+<!-- Форма добавления товара -->
+<form id="createForm">
+  <input type="text" id="name" placeholder="Name" required>
+  <input type="number" id="price" placeholder="Price" required>
+  <input type="text" id="size" placeholder="Size">
+  <input type="text" id="category" placeholder="Category">
+  <button type="submit">Add Item</button>
+</form>
+
+<!-- Кнопка сортировки -->
+<button onclick="sortItems()">Sort by Price ↑/↓</button>
+
+<!-- Каталог товаров -->
+<div id="catalog"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

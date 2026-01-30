@@ -1,0 +1,21 @@
+{
+  "name": "watuluvx_project",
+  "version": "1.0.0",
+  "description": "Watuluvx is a modern online clothing store that showcases stylish and trendy fashion collections. The website allows users to explore clothes in a clean and minimalistic interface. In the future, users will be able to add items to a cart and make purchases online.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "mongodb": "^7.0.0",
+    "mongoose": "^9.1.5",
+    "mysql2": "^3.16.0"
+  }
+}

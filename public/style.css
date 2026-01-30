@@ -1,0 +1,204 @@
+/* Сброс стилей */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #1c0f0a;
+  color: #f5e6d3;
+  font-family: 'Georgia', serif;
+  line-height: 1.6;
+  padding: 20px;
+}
+
+/* Хедер и navbar */
+header {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+h1 {
+  font-size: 42px;
+  letter-spacing: 2px;
+}
+
+nav {
+  margin-top: 25px;
+}
+
+.nav-btn {
+  display: inline-block;
+  margin: 0 15px; /* чуть больше пространства между кнопками */
+  padding: 12px 28px;
+  border-radius: 30px;
+  text-decoration: none;
+  color: #f5e6d3;
+  background: linear-gradient(135deg, #5a2a1f, #3b1f1f);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.nav-btn:hover {
+  transform: translateY(-3px);
+  background: linear-gradient(135deg, #8b3a3a, #5a2a1f);
+}
+
+/* Контейнер для формы и каталога */
+.container {
+  max-width: 900px;
+  margin: 60px auto;
+  background: #2a1712;
+  padding: 50px;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px; /* расстояние между блоками */
+}
+
+/* Заголовки */
+h2 {
+  margin-bottom: 15px;
+  color: #e8c9a9;
+}
+
+p {
+  line-height: 1.8;
+  margin-bottom: 40px;
+}
+
+/* Поля формы */
+form#createForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* расстояние между полями */
+  justify-content: center;
+}
+
+input, textarea {
+  width: 100%;
+  max-width: 400px;
+  padding: 12px 15px;
+  border-radius: 12px;
+  border: 2px solid #5a2a1f;
+  background-color: #3b1f1f;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+/* Подсветка при фокусе */
+input:focus,
+textarea:focus {
+  border-color: #8b3a3a;
+  background-color: #4b2920;
+  outline: none;
+  box-shadow: 0 0 8px rgba(255, 200, 150, 0.4);
+}
+
+/* Кнопки формы */
+form#createForm button {
+  background: #8b3a3a;
+  color: #fff;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+form#createForm button:hover {
+  background: #6b2c2c;
+}
+
+/* Кнопка сортировки */
+button.sort-btn {
+  background: #ffc107;
+  color: #333;
+  padding: 12px 25px;
+  border-radius: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+button.sort-btn:hover {
+  background: #e0a800;
+}
+
+/* Каталог товаров */
+#catalog {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px; /* расстояние между карточками */
+}
+
+/* Карточки товаров */
+.item-card {
+  background-color: #3b1f1f;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.item-card h3 {
+  color: #e8c9a9;
+  margin-bottom: 10px;
+}
+
+.item-card p {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+/* Кнопки Edit/Delete внутри карточки */
+.item-card button {
+  padding: 8px 14px;
+  margin: 5px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.3s ease;
+}
+
+.item-card button.edit-btn {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.item-card button.edit-btn:hover {
+  background-color: #117a8b;
+}
+
+.item-card button.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.item-card button.delete-btn:hover {
+  background-color: #a71d2a;
+}
+
+/* Адаптив для мобильных */
+@media (max-width: 600px) {
+  form#createForm {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  input, textarea {
+    max-width: 100%;
+  }
+}
