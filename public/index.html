@@ -29,5 +29,42 @@
 <div id="catalog"></div>
 
 <script src="app.js"></script>
+<div id="loginForm">
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+</div>
+
+<script>
+  
+async function login() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  const res = await fetch('/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+  });
+
+  if(res.status === 200) {
+    alert('Logged in!');
+  } else {
+    alert('Ошибка логина');
+  }
+}
+</script>
+<script>
+window.onload = async () => {
+  const res = await fetch('/auth/check'); // роут на сервере для проверки сессии
+  const data = await res.json();
+
+  if(!data.loggedIn) {
+    // скрываем кнопки Add, Edit и Delete для неавторизованных
+    document.querySelectorAll('.edit-btn, .delete-btn, #addItemBtn').forEach(btn => btn.style.display = 'none');
+  }
+}
+</script>
+
 </body>
 </html>
