@@ -8,6 +8,9 @@ const session = require('express-session');
 dotenv.config();
 
 const app = express();
+app.use(express.static('public'));
+app.use(express.json()); // чтобы сервер понимал JSON из форм
+
 
 // ===== MIDDLEWARE =====
 app.use(express.json());
@@ -44,6 +47,7 @@ function authMiddleware(req, res, next) {
   }
   next();
 }
+
 
 // ===== MODEL (DOMAIN DATA) =====
 const productSchema = new mongoose.Schema({

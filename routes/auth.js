@@ -57,5 +57,7 @@ router.post('/logout', (req, res) => {
   req.session.destroy();
   res.send('Logged out');
 });
+const user = await User.findOne({ username });
+const match = await bcrypt.compare(password, user.password);
 
 module.exports = router;
