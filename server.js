@@ -10,7 +10,9 @@ dotenv.config();
 const app = express();
 app.use(express.static('public'));
 app.use(express.json()); // чтобы сервер понимал JSON из форм
-
+const cors = require('cors');
+app.use(cors());
+,
 
 // ===== MIDDLEWARE =====
 app.use(express.json());
