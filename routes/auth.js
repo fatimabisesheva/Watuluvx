@@ -1,36 +1,19 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
 const router = express.Router();
-const mongoose = require('mongoose');
-
-// USER MODEL
-const userSchema = new mongoose.Schema({
-  username: String,
-  password: String
-});
-
-const User = mongoose.model('User', userSchema);
+const User = require('../models/User');
 
 // REGISTER
 router.post('/register', async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    if (!username || !password) {
-      return res.status(400).send('Fill all fields');
-    }
-
-    const hashed = await bcrypt.hash(password, 10);
-
-    const user = new User({
-      username,
-      password: hashed
-    });
-
+    const user = new User({ username, password });
     await user.save();
-    res.send('User created');
-  } catch {
-    res.status(500).send('Error');
+
+    res.status(201).json({ message: 'User created' });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ message: 'Registration error' });
   }
 });
 
@@ -40,24 +23,33 @@ router.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     const user = await User.findOne({ username });
-    if (!user) return res.status(401).send('Invalid credentials');
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(401).send('Invalid credentials');
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
 
-    req.session.user = user._id;
-    res.send('Logged in');
-  } catch {
-    res.status(500).send('Error');
+    // СОЗДАЕМ СЕССИЮ
+    req.session.userId = user._id;
+
+    res.json({ message: 'Logged in' });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
 // LOGOUT
 router.post('/logout', (req, res) => {
-  req.session.destroy();
-  res.send('Logged out');
+  req.session.destroy(err => {
+    if (err) {
+      return res.status(500).json({ message: 'Logout error' });
+    }
+    res.json({ message: 'Logged out' });
+  });
 });
-const user = await User.findOne({ username });
-const match = await bcrypt.compare(password, user.password);
 
 module.exports = router;

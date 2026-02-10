@@ -1,0 +1,21 @@
+<h2>Register</h2>
+<form id="reg">
+  <input name="username" />
+  <input name="password" type="password"/>
+  <button>Register</button>
+</form>
+
+<script>
+reg.onsubmit = async e => {
+  e.preventDefault();
+  const res = await fetch('/auth/register', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      username: reg.username.value,
+      password: reg.password.value
+    })
+  });
+  alert((await res.json()).message);
+};
+</script>
