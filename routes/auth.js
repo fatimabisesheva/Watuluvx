@@ -1,55 +1,38 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
+const User = require('../models/User'); // модель пользователя
+const bcrypt = require('bcrypt');
 
-// REGISTER
 router.post('/register', async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const user = new User({ username, password });
-    await user.save();
+    // проверка
+    if (!username || !password) {
+      return res.json({ message: 'Заполните поля' });
+    }
 
-    res.status(201).json({ message: 'User created' });
+    // есть ли уже такой юзер
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.json({ message: 'Пользователь уже существует' });
+    }
+
+    // хеш пароля
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      username,
+      password: hashedPassword
+    });
+
+    await newUser.save();
+
+    res.json({ message: 'Регистрация успешна' });
+
   } catch (err) {
-    console.log(err);
-    res.status(400).json({ message: 'Registration error' });
+    res.json({ message: 'Ошибка регистрации' });
   }
-});
-
-// LOGIN
-router.post('/login', async (req, res) => {
-  try {
-    const { username, password } = req.body;
-
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
-    }
-
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
-    }
-
-    // СОЗДАЕМ СЕССИЮ
-    req.session.userId = user._id;
-
-    res.json({ message: 'Logged in' });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// LOGOUT
-router.post('/logout', (req, res) => {
-  req.session.destroy(err => {
-    if (err) {
-      return res.status(500).json({ message: 'Logout error' });
-    }
-    res.json({ message: 'Logged out' });
-  });
 });
 
 module.exports = router;
