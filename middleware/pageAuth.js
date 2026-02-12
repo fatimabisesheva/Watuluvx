@@ -1,6 +1,4 @@
-module.exports = function(req, res, next) {
-  if (!req.session.userId) {
-    return res.redirect('/login.html');
-  }
-  next();
+module.exports = (req, res, next) => {
+    if (!req.session.userId) return res.redirect('/');
+    next();
 };

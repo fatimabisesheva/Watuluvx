@@ -1,42 +1,45 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
-const { getDB } = require('../data/database/mongo');
-
-
 const router = express.Router();
+const bcrypt = require('bcryptjs');
+const User = require('../models/User');
 
+// ===== Регистрация =====
 router.post('/register', async (req, res) => {
-  const { username, password } = req.body;
+    const { username, email, password } = req.body;
+    if (!username || !email || !password) return res.status(400).send('All fields required');
 
-  const hashed = await bcrypt.hash(password, 10);
-  const db = getDB();
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).send('User already exists');
 
-  await db.collection('users').insertOne({
-    username,
-    password: hashed
-  });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ username, email, password: hashedPassword });
+    await newUser.save();
 
-  res.json({ message: 'Registered' });
+    res.redirect('/');
 });
 
+// ===== Логин =====
 router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-  const db = getDB();
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).send('All fields required');
 
-  const user = await db.collection('users').findOne({ username });
-  if (!user) return res.status(401).json({ message: 'Invalid credentials' });
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).send('Invalid credentials');
 
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) return res.status(401).json({ message: 'Invalid credentials' });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).send('Invalid credentials');
 
-  req.session.userId = user._id;
-
-  res.json({ message: 'Logged in' });
+    req.session.userId = user._id;
+    res.redirect('/home');
 });
 
-router.post('/logout', (req, res) => {
-  req.session.destroy();
-  res.json({ message: 'Logged out' });
+// ===== Логаут =====
+router.get('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) console.error(err);
+        res.clearCookie('connect.sid');
+        res.redirect('/');
+    });
 });
 
 module.exports = router;
