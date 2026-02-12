@@ -1,38 +1,42 @@
 const express = require('express');
-const router = express.Router();
-const User = require('../models/User'); // модель пользователя
 const bcrypt = require('bcrypt');
+const { getDB } = require('../data/database/mongo');
+
+
+const router = express.Router();
 
 router.post('/register', async (req, res) => {
-  try {
-    const { username, password } = req.body;
+  const { username, password } = req.body;
 
-    // проверка
-    if (!username || !password) {
-      return res.json({ message: 'Заполните поля' });
-    }
+  const hashed = await bcrypt.hash(password, 10);
+  const db = getDB();
 
-    // есть ли уже такой юзер
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      return res.json({ message: 'Пользователь уже существует' });
-    }
+  await db.collection('users').insertOne({
+    username,
+    password: hashed
+  });
 
-    // хеш пароля
-    const hashedPassword = await bcrypt.hash(password, 10);
+  res.json({ message: 'Registered' });
+});
 
-    const newUser = new User({
-      username,
-      password: hashedPassword
-    });
+router.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  const db = getDB();
 
-    await newUser.save();
+  const user = await db.collection('users').findOne({ username });
+  if (!user) return res.status(401).json({ message: 'Invalid credentials' });
 
-    res.json({ message: 'Регистрация успешна' });
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) return res.status(401).json({ message: 'Invalid credentials' });
 
-  } catch (err) {
-    res.json({ message: 'Ошибка регистрации' });
-  }
+  req.session.userId = user._id;
+
+  res.json({ message: 'Logged in' });
+});
+
+router.post('/logout', (req, res) => {
+  req.session.destroy();
+  res.json({ message: 'Logged out' });
 });
 
 module.exports = router;
